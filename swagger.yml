@@ -1,0 +1,230 @@
+openapi: 3.0.0
+info:
+  title: Bombergame API
+  version: 0.1.0
+
+servers:
+- url: https://bombergame-backend.now.sh
+  description: Bombergame backend server
+
+paths:
+  /auth/session:
+    post:
+      description: Creates new session
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+
+      responses:
+        '200':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '401':
+          description: Not authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
+        '422':
+          description: Invalid credentials format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
+
+    delete:
+      security:
+      - bearerAuth: []
+      description: Deletes current session
+      responses:
+        '200':
+          description: Session deleted
+        '401':
+          description: Not authorized
+
+  /profiles:
+    post:
+      description: Creates new profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+              required:
+              - username
+              - password
+              - email
+      responses:
+        '200':
+          description: Profile created
+        '409':
+          description: Duplicate found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
+        '422':
+          description: Invalid profile info format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
+
+  /profiles?page_index=1&page_size=10:
+    get:
+      description: Returns paginated list of profiles ordered by score
+      parameters:
+      - name: page_index
+        in: query
+        description: Current page index
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          default: 1
+      - name: page_size
+        in: query
+        description: Current page index
+        schema:
+          type: integer
+          format: int32
+          minimum: 1
+          default: 10
+      responses:
+        '200':
+          description: List of profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Profile'
+
+  /profiles/{profile_id}:
+    parameters:
+    - name: profile_id
+      in: path
+      required: true
+      description: Profile identity
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+
+    get:
+      summary: Returns single profile info
+      responses:
+        '200':
+          decription: Profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '404':
+          description: Profile not found
+
+    patch:
+      summary: Updates single profile
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+      responses:
+        '200':
+          description: Profile updated
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Profile not found
+
+    delete:
+      summary: Deletes single profile
+      responses:
+        '200':
+          description: Profile deleted
+        '401':
+          description: Not authorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Profile not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Profile:
+      properties:
+        id:
+          type: integer
+          format: int64
+          min: 1
+          readOnly: true
+        username:
+          type: string
+          pattern: '^\w{1,50}$'
+        password:
+          type: string
+          format: password
+          minLength: 4
+          maxLength: 100
+          writeOnly: true
+        email:
+          type: string
+          format: email
+        score:
+          type: integer
+          format: int32
+          min: 0
+          readOnly: true
+
+    Credentials:
+      properties:
+        username:
+          type: string
+          pattern: '^\w{1,50}$'
+          writeOnly: true
+        password:
+          type: string
+          format: password
+          minLength: 4
+          maxLength: 100
+          writeOnly: true
+      required:
+      - username
+      - password
+
+    Session:
+      properties:
+        profile_id:
+          type: integer
+          format: int64
+          min: 1
+          readOnly: true
+        token:
+          type: string
+          readOnly: true
+
+  responses:
+    Error:
+      properties:
+        message:
+          type: string
+          readOnly: true
