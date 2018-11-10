@@ -10,14 +10,13 @@ servers:
 paths:
   /auth/session:
     post:
-      description: Creates new session
+      summary: Creates new session
       requestBody:
         required: true
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Credentials'
-
       responses:
         '200':
           description: Session created
@@ -37,20 +36,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/Error'
-
     delete:
+      summary: Deletes current session
       security:
       - bearerAuth: []
-      description: Deletes current session
       responses:
         '200':
           description: Session deleted
         '401':
           description: Not authorized
-
   /profiles:
     post:
-      description: Creates new profile
+      summary: Creates new profile
       requestBody:
         required: true
         content:
@@ -76,10 +73,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/responses/Error'
-
   /profiles?page_index=1&page_size=10:
     get:
-      description: Returns paginated list of profiles ordered by score
+      summary: Returns paginated list of profiles ordered by score
       parameters:
       - name: page_index
         in: query
@@ -106,7 +102,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Profile'
-
   /profiles/{profile_id}:
     parameters:
     - name: profile_id
@@ -117,7 +112,6 @@ paths:
         type: integer
         format: int64
         minimum: 1
-
     get:
       summary: Returns single profile info
       responses:
@@ -129,7 +123,6 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '404':
           description: Profile not found
-
     patch:
       summary: Updates single profile
       security:
@@ -149,7 +142,6 @@ paths:
           description: Forbidden
         '404':
           description: Profile not found
-
     delete:
       summary: Deletes single profile
       responses:
@@ -194,7 +186,6 @@ components:
           format: int32
           min: 0
           readOnly: true
-
     Credentials:
       properties:
         username:
@@ -210,7 +201,6 @@ components:
       required:
       - username
       - password
-
     Session:
       properties:
         profile_id:
