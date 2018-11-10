@@ -1,0 +1,5 @@
+{
+  "type":"docker",
+  "public":true,
+  "alias":"bombergame-rest-api-reference"
+}
