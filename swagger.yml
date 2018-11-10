@@ -102,6 +102,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Profile'
+        '422':
+          description: Wrong query format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
   /profiles/{profile_id}:
     parameters:
     - name: profile_id
@@ -123,6 +129,12 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '404':
           description: Profile not found
+        '422':
+          description: Wrong profile id format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
     patch:
       summary: Updates single profile
       security:
@@ -142,8 +154,16 @@ paths:
           description: Forbidden
         '404':
           description: Profile not found
+        '422':
+          description: Wrong profile id or update format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
     delete:
       summary: Deletes single profile
+      security:
+      - bearerAuth: []
       responses:
         '200':
           description: Profile deleted
@@ -153,6 +173,12 @@ paths:
           description: Forbidden
         '404':
           description: Profile not found
+        '422':
+          description: Wrong profile id format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Error'
 
 components:
   securitySchemes:
