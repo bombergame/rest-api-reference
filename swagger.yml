@@ -27,15 +27,15 @@ paths:
         '401':
           description: Not authorized
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
         '422':
           description: Invalid credentials format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
     delete:
       summary: Deletes current session
       security:
@@ -45,6 +45,10 @@ paths:
           description: Session deleted
         '401':
           description: Not authorized
+          content:
+            text/plain:
+              schema:
+                type: string
   /profiles:
     post:
       summary: Creates new profile
@@ -64,15 +68,15 @@ paths:
         '409':
           description: Duplicate found
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
         '422':
           description: Invalid profile info format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
   /profiles?page_index=1&page_size=10:
     get:
       summary: Returns paginated list of profiles ordered by score
@@ -105,9 +109,9 @@ paths:
         '422':
           description: Wrong query format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
   /profiles/{profile_id}:
     parameters:
     - name: profile_id
@@ -129,12 +133,16 @@ paths:
                 $ref: '#/components/schemas/Profile'
         '404':
           description: Profile not found
+          content:
+            text/plain:
+              schema:
+                type: string
         '422':
           description: Wrong profile id format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
     patch:
       summary: Updates single profile
       security:
@@ -150,16 +158,28 @@ paths:
           description: Profile updated
         '401':
           description: Not authorized
+          content:
+            text/plain:
+              schema:
+                type: string
         '403':
           description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
         '404':
           description: Profile not found
+          content:
+            text/plain:
+              schema:
+                type: string
         '422':
           description: Wrong profile id or update format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
     delete:
       summary: Deletes single profile
       security:
@@ -169,16 +189,28 @@ paths:
           description: Profile deleted
         '401':
           description: Not authorized
+          content:
+            text/plain:
+              schema:
+                type: string
         '403':
           description: Forbidden
+          content:
+            text/plain:
+              schema:
+                type: string
         '404':
           description: Profile not found
+          content:
+            text/plain:
+              schema:
+                type: string
         '422':
           description: Wrong profile id format
           content:
-            application/json:
+            text/plain:
               schema:
-                $ref: '#/components/responses/Error'
+                type: string
 
 components:
   securitySchemes:
@@ -235,12 +267,5 @@ components:
           min: 1
           readOnly: true
         token:
-          type: string
-          readOnly: true
-
-  responses:
-    Error:
-      properties:
-        message:
           type: string
           readOnly: true
