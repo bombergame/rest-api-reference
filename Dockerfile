@@ -1,4 +1,4 @@
-FROM ruby:2.5.3-slim as base
+FROM ruby:2.7.1-slim as base
 WORKDIR /tmp
 COPY ./swagger.yml ./swagger.yml
 RUN ruby -ryaml -rjson -e 'puts JSON.pretty_generate(YAML.load(ARGF))' < ./swagger.yml > ./swagger.json
